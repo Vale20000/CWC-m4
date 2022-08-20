@@ -9,8 +9,8 @@ import SwiftUI
 
 struct RecipeListView: View {
     
-    // Reference the view model
-    @ObservedObject var model = RecipeModel()
+    // Automatically catches the data in the Parent View
+    @EnvironmentObject var model:RecipeModel
     
     var body: some View {
         
