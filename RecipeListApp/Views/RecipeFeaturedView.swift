@@ -16,6 +16,7 @@ struct RecipeFeaturedView: View {
     // We could also create an instance of RecipeModel directly in the main struct (RecipeListApp)
     
     @EnvironmentObject var model:RecipeModel
+    @State var isDetailViewShowing = false
     
     var body: some View {
         
@@ -36,22 +37,39 @@ struct RecipeFeaturedView: View {
                         // Only show those that should be featured
                         if model.recipes[index].featured {
                             
-                            // Recipe card
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(Color.white)
+                            // Recipe card button
+                            Button {
                                 
-                                VStack(spacing: 0) {
-                                    Image(model.recipes[index].image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .clipped()
-                                    Text(model.recipes[index].name)
-                                        .padding(5)
+                                // In questo modo la detail view (sheet()) viene mostrata
+                                // Show the recipe detail sheet
+                                self.isDetailViewShowing = true
+                                
+                            } label: {
+                                // Recipe card
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundColor(Color.white)
+                                    
+                                    VStack(spacing: 0) {
+                                        Image(model.recipes[index].image)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
+                                        Text(model.recipes[index].name)
+                                            .padding(5)
+                                    }
                                 }
-                            }.frame(width: geo.size.width - 40, height: geo.size.height - 100, alignment: .center)
+                            }   .sheet(isPresented: $isDetailViewShowing, content: { // Se il parametro è true, il content viene eseguito, altrimenti no. In questo caso il content è il fatto di mostrare i dettagli della ricetta.
+                                // Show the Recipe Detail View
+                                RecipeDetailView(recipe: model.recipes[index])
+                            })
+                                .buttonStyle(PlainButtonStyle()) // Per il testo black
+                                .frame(width: geo.size.width - 40, height: geo.size.height - 100, alignment: .center)
                                 .cornerRadius(15)
                                 .shadow(color: Color(.sRGB, red: 0, green: 0, blue: 0, opacity: 0.5), radius: 10, x: -5, y: 5) // -5 alla x e +5 alla y dell'ombra
+
+                            
+                            
                         }
                         
                     }
